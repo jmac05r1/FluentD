@@ -375,3 +375,79 @@ _Note: This file is generated from [templates/README.md.erb](templates/README.md
 [alpine-dockerhub]: https://hub.docker.com/_/alpine
 [debian-dockerhub]: https://hub.docker.com/_/debian
 [fluentd-article]: https://docs.fluentd.org/container-deployment/kubernetes
+
+
+#######################################################################
+# configuration of output to push to cloudwtach
+#######################################################################
+Configuration
+out_cloudwatch_logs
+<match tag>
+  @type cloudwatch_logs
+  log_group_name log-group-name
+  log_stream_name log-stream-name
+  auto_create_stream true
+  #message_keys key1,key2,key3,...
+  #max_message_length 32768
+  #use_tag_as_group false
+  #use_tag_as_stream false
+  #include_time_key true
+  #localtime true
+  #log_group_name_key group_name_key
+  #log_stream_name_key stream_name_key
+  #remove_log_group_name_key true
+  #remove_log_stream_name_key true
+  #put_log_events_retry_wait 1s
+  #put_log_events_retry_limit 17
+  #put_log_events_disable_retry_limit false
+  #endpoint http://localhost:5000/
+  #json_handler json
+  #log_rejected_request true
+  #<web_identity_credentials>
+  #  role_arn          "#{ENV['AWS_ROLE_ARN']}"
+  #  role_session_name ROLE_SESSION_NAME
+  #  web_identity_token_file "#{ENV['AWS_WEB_IDENTITY_TOKEN_FILE']}"
+  #</web_identity_credentials>
+  #<format>
+  #  @type ltsv
+  #</format>
+</match>
+auto_create_stream: to create log group and stream automatically. (defaults to false)
+aws_key_id: AWS Access Key. See Authentication for more information.
+aws_sec_key: AWS Secret Access Key. See Authentication for more information.
+concurrency: use to set the number of threads pushing data to CloudWatch. (default: 1)
+endpoint: use this parameter to connect to the local API endpoint (for testing)
+ssl_verify_peer: when true (default), SSL peer certificates are verified when establishing a connection. Setting to false can be useful for testing.
+http_proxy: use to set an optional HTTP proxy
+include_time_key: include time key as part of the log entry (defaults to UTC)
+json_handler: name of the library to be used to handle JSON data. For now, supported libraries are json (default) and yajl.
+localtime: use localtime timezone for include_time_key output (overrides UTC default)
+log_group_aws_tags: set a hash with keys and values to tag the log group resource
+log_group_aws_tags_key: use specified field of records as AWS tags for the log group
+log_group_name: name of log group to store logs
+log_group_name_key: use specified field of records as log group name
+log_rejected_request: output rejected_log_events_info request log. (defaults to false)
+log_stream_name: name of log stream to store logs
+log_stream_name_key: use specified field of records as log stream name
+max_events_per_batch: maximum number of events to send at once (default 10000)
+max_message_length: maximum length of the message
+message_keys: keys to send messages as events
+put_log_events_disable_retry_limit: if true, put_log_events_retry_limit will be ignored
+put_log_events_retry_limit: maximum count of retry (if exceeding this, the events will be discarded)
+put_log_events_retry_wait: time before retrying PutLogEvents (retry interval increases exponentially like put_log_events_retry_wait * (2 ^ retry_count))
+region: AWS Region. See Authentication for more information.
+remove_log_group_aws_tags_key: remove field specified by log_group_aws_tags_key
+remove_log_group_name_key: remove field specified by log_group_name_key
+remove_log_stream_name_key: remove field specified by log_stream_name_key
+remove_retention_in_days_key: remove field specified by retention_in_days_key
+retention_in_days: use to set the expiry time for log group when created with auto_create_stream. (default to no expiry)
+retention_in_days_key: use specified field of records as retention period
+use_tag_as_group: to use tag as a group name
+use_tag_as_stream: to use tag as a stream name
+<web_identity_credentials>: For EKS authentication.
+role_arn: The Amazon Resource Name (ARN) of the role to assume. This parameter is required when using <web_identity_credentials>.
+role_session_name: An identifier for the assumed role session. This parameter is required when using <web_identity_credentials>.
+web_identity_token_file: The absolute path to the file on disk containing the OIDC token. This parameter is required when using <web_identity_credentials>.
+policy: An IAM policy in JSON format. (default nil)
+duration_seconds: The duration, in seconds, of the role session. The value can range from 900 seconds (15 minutes) to 43200 seconds (12 hours). By default, the value is set to 3600 seconds (1 hour). (default nil)
+<format>: For specifying records format. See formatter overview and formatter section overview on the official documentation.
